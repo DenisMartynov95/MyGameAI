@@ -44,7 +44,9 @@ public class Explorer {
     }
 
     public void checkDiplomacyScore() {
+        System.out.println("==================================================================================================");
         for (int i = 0; i < players.length; i++) {
+            System.out.println(" ");
             System.out.println("Расчет значений для игрока №" + (i + 1));
             if (players[i].getDiplomacyScore() >= 80) {
                 System.out.println("+++ Держи от меня помощь в 30 монет! +++");
@@ -52,6 +54,18 @@ public class Explorer {
                 System.out.println("+++ Хочу заключить с тобой союз! +++");
             } else {
                 System.out.println("--- Я тебе не доверяю!");
+            }
+        }
+    }
+
+    public void checkWarScore() {
+        System.out.println("==================================================================================================");
+        for (int i = 0; i < players.length; i++) {
+            System.out.println("Расчет значений для игрока №" + (i + 1));
+            if (players[i].getAggressiveScore() <= -100) {
+                System.out.println("!!!Я ОБЪЯВЛЯЮ ТЕБЕ ВОЙНУ ИГРОКУ " + (i + 1));
+            } else {
+                System.out.println("Между нами МИР");
             }
         }
     }

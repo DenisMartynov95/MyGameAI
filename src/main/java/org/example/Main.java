@@ -11,7 +11,7 @@ public class Main {
         for (int i = 0; i < 100000; i++) {
             explorer.firstAction();
             explorer.checkDiplomacyScore();
-            explorer.firstAction();
+            explorer.checkWarScore();
 
         }
 

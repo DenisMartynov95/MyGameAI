@@ -24,7 +24,7 @@ public class Explorer {
     }
 
     public void firstAction() {
-        System.out.println("ВРАГИ В ПРЕДЕЛАХ 2 ЗОН? (1 - Да, 0 - Нет)");
+        System.out.println("ВРАГИ В ПРЕДЕЛАХ 1 ЗОНЫ? (1 - Да, 0 - Нет)");
         int isEnemyNear = scanner.nextInt();
         if (isEnemyNear == 1) {
             System.out.println("У МЕНЯ ХВАТАЕТ ОТРЯДОВ? (1 - Да, 0 - Нет)");
@@ -53,11 +53,10 @@ public class Explorer {
 
     public void uniqueAction() {
         Random random = new Random();
-        System.out.println("Проверка случайного события...");
-        if (random.nextInt(50) >= 25) {
-            System.out.println("Случайное событие произошло!");
-            System.out.println("КТО-ТО ХОЧЕТ ЗАХВАТИТЬ ЦЕННЫЕ РЕСУРСЫ? (1 - Да, 0 - Нет)");
-            int answer = scanner.nextInt();
+
+        System.out.println("Случайное событие произошло!");
+        System.out.println("КТО-ТО ХОЧЕТ ЗАХВАТИТЬ ЦЕННЫЕ РЕСУРСЫ? (1 - Да, 0 - Нет)");
+        int answer = scanner.nextInt();
             if (answer == 1) {
                 System.out.println("У МЕНЯ МАНЫ БОЛЬШЕ ЧЕМ 6? (1 - Да, 0 - Нет)");
                 int answer2 = scanner.nextInt();
@@ -72,19 +71,32 @@ public class Explorer {
                         if (answer3 == 1) {
                             System.out.println("=== ДОГОВОРИЛИСЬ! ТЫ НЕ ЗАХВАТЫВАЕШЬ ЭТУ ЗОНУ ===");
                             updatePlayerRelations(playerNumber, 20, 30); // Улучшение отношений
+                            System.out.println("+ Наши отношения улучшились! Агрессивность: " + players[playerNumber].getAggressiveScore());
+                            System.out.println("+ Наши отношения улучшились! Дипломатия: " + players[playerNumber].getDiplomacyScore());
                         } else {
-                        System.out.println("!!! Я УДАРЯЮ ЗАКЛИНАНИЕМ ПО ТВОИМ ЮНИТАМ И УБИВАЮ:" + random.nextInt(4));
+                        System.out.println("!!! Я УДАРЯЮ ЗАКЛИНАНИЕМ ПО ТВОИМ ЮНИТАМ И УБИВАЮ:" + random.nextInt(3));
                         updatePlayerRelations(playerNumber, -10, -25); // Ухудшение отношений
+                            System.out.println("- Наши отношения ухудшились! Агрессивность: " + players[playerNumber].getAggressiveScore());
+                            System.out.println("- Наши отношения ухудшились! Дипломатия: " + players[playerNumber].getDiplomacyScore());
                         }
                     }
                 } else {
                     System.out.println("НЕВЕРНЫЙ НОМЕР ИГРОКА!");
                 }
             } else {
-                System.out.println("=== ПРИДЕТСЯ ПОТЕРПЕТЬ ===");
+                System.out.println("=== ПРОДОЛЖАЮ ЗАХВАТЫВАТЬ ТЕРРИТОРИИ ===");
             }
-        } else {
-            System.out.println("Случайное событие не произошло.");
+    }
+
+    public void getUnits() {
+        Random random = new Random();
+
+        System.out.println("В конце хода я покупаю " + random.nextInt(4) + " юнитов");
+        if (random.nextInt(100) >= 70) {
+            System.out.println("В конце хода я покупаю 1 башню!");
+        }
+        if (random.nextInt(100) >= 90) {
+            System.out.println("В конце хода я покупаю 1 замок(+3)");
         }
     }
 

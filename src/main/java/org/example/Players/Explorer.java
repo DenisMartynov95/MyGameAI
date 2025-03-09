@@ -23,6 +23,58 @@ public class Explorer {
                 " Дипломатия: " + players[playerNumber].getDiplomacyScore());
     }
 
+    // Метод проверки, был ли я атакован другими игроками за ход - в итоге я развязываю с ними войну в ответ
+    public void doWeAttacked() {
+        System.out.println("Я БЫЛ АТАКОВАН ИГРОКОМ? (1 - Да, 0 - Нет)");
+        int answer1 = scanner.nextInt();
+        if (answer1 == 1) {
+            System.out.println("КАКИМ ИГРОКОМ Я АТАКОВАН? ВЫБЕРИТЕ ИГРОКОВ (Цифры от 1 до " + players.length + " через пробел): ");
+            scanner.nextLine(); // Очистка буфера
+            String input = scanner.nextLine(); // Чтение строки с номерами игроков
+            String[] playerNumbers = input.split(" "); // Разделение строки на отдельные номера
+
+            for (String numberStr : playerNumbers) {
+                try {
+                    int playerNumber = Integer.parseInt(numberStr) - 1; // Индексация с 0
+                    if (playerNumber >= 0 && playerNumber < players.length) {
+                        updatePlayerRelations(playerNumber, -200, -50);
+                        if (players[playerNumber].getAggressiveScore() <= -200) {
+                            players[playerNumber].setWar(true); // Меняю флаг войны
+                        }
+                    } else {
+                        System.out.println("НЕВЕРНЫЙ НОМЕР ИГРОКА: " + (playerNumber + 1));
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("ОШИБКА: Введено не число: " + numberStr);
+                }
+            }
+        }
+    }
+
+    // Метод позволяющий прийти к соглашению о мире с рандомным игроком с рандомными условиями
+    public void canWeMakePeace() {
+        for (int i = 0; i < players.length; i++) { // Используем индекс
+            Player player = players[i];
+            if (player.isWar()) {
+                System.out.println("ОБРАЩАЮСЬ К ИГРОКУ " + (i + 1) + " ХОТИТЕ ЗАКЛЮЧИТЬ МИР? (1 - Да, 0 - Нет)");
+                int answer = scanner.nextInt();
+                if (answer == 1) {
+                    System.out.println("ЗАПЛАТИ МНЕ 50 МОНЕТ ИЛИ ОТДАЙ 1 ПОГРАНИЧНУЮ ТЕРРИТОРИЮ (1 - Да, 0 - Нет)");
+                    int answer1 = scanner.nextInt();
+                    if (answer1 == 1) {
+                        System.out.println("=== ЗАКЛЮЧАЕМ СДЕЛКУ! ТЫ НЕ МОЖЕШЬ НА МЕНЯ НАПАДАТЬ 5 ХОДОВ! ===");
+                        player.setWar(false);
+                        updatePlayerRelations(i, 200, 50); // Используем индекс игрока
+                    } else {
+                        System.out.println("=== НЕ УДАЛОСЬ ДОГОВОРИТЬСЯ! ===");
+                    }
+                }
+            }
+        }
+    }
+
+
+
     public void firstAction() {
         System.out.println("ВРАГИ В ПРЕДЕЛАХ 1 ЗОНЫ? (1 - Да, 0 - Нет)");
         int isEnemyNear = scanner.nextInt();
@@ -33,17 +85,49 @@ public class Explorer {
                 System.out.println("ЭТО ИГРОК? (1 - Да, 0 - Нет)");
                 int isPlayer = scanner.nextInt();
                 if (isPlayer == 1) {
-                    System.out.println("ВЫБЕРИТЕ ИГРОКА (Цифру от 1 до " + players.length + "):");
-                    int playerNumber = scanner.nextInt() - 1; // Индексация с 0
-                    if (playerNumber >= 0 && playerNumber < players.length) {
-                        updatePlayerRelations(playerNumber, -10, -20);
-                        System.out.println("!!!Изменение уровня отношений с игроком " + (playerNumber + 1));
-                        System.out.println("!!!" + "Агрессивность: " + players[playerNumber].getAggressiveScore() +
-                                " Дипломатия: " + players[playerNumber].getDiplomacyScore());
-                    } else {
-                        System.out.println("НЕВЕРНЫЙ НОМЕР ИГРОКА!");
+                    System.out.println("ВЫБЕРИТЕ ИГРОКОВ (Цифры от 1 до " + players.length + " через пробел):");
+                    scanner.nextLine(); // Очистка буфера
+                    String input = scanner.nextLine(); // Чтение строки с номерами игроков
+                    String[] playerNumbers = input.split(" "); // Разделение строки на отдельные номера
+
+                    for (String numberStr : playerNumbers) {
+                        try {
+                            int playerNumber = Integer.parseInt(numberStr) - 1; // Индексация с 0
+                            if (playerNumber >= 0 && playerNumber < players.length) {
+                                updatePlayerRelations(playerNumber, -10, -20);
+                            } else {
+                                System.out.println("НЕВЕРНЫЙ НОМЕР ИГРОКА: " + (playerNumber + 1));
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("ОШИБКА: Введено не число: " + numberStr);
+                        }
                     }
                 }
+
+                System.out.println("У МЕНЯ ИМЕЮТСЯ БАШНИ КОТОРЫМИ Я МОГУ АТАКОВАТЬ? (1 - Да, 0 - Нет)");
+                int answer1 = scanner.nextInt();
+                if (answer1 == 1) {
+                    Random random = new Random();
+                    if (random.nextInt(100) >= 65 ) {
+                        System.out.println("=== СТРЕЛЯЮ БАШНЯМИ ПО ВРАГАМ И УБИВАЮ ПО 1 ЮНИТУ У САМЫХ УГРОЖАЮЩИХ АРМИЙ ЗА КАЖДУЮ БАШНЮ ===");
+                    } else {
+                        System.out.println("промахнулся");
+                    }
+                }
+
+                System.out.println("У МЕНЯ ИМЕЕТСЯ МАНА НА ЗАЩИТНЫЕ ЗАКЛИНАНИЯ? (1 - Да, 0 - Нет)");
+                int answer2 = scanner.nextInt();
+                if (answer2 == 1) {
+                    Random random = new Random();
+                    if (random.nextInt(100) >= 50) {
+                        System.out.println("=== ИСПОЛЬЗУЮ ЗАКЛИНАНИЕ! ===");
+                    } else {
+                        System.out.println("промахиваюсь заклинанием");
+                    }
+                } else {
+                    System.out.println("не использую заклинание");
+                }
+
                 System.out.println("=== ГОТОВЛЮСЬ К ОБОРОНЕ, НО ДВА ОТРЯДА ЗАХВАТЫВАЮТ ОБЛАСТИ ===");
             }
         } else if (isEnemyNear == 0) {
@@ -70,14 +154,10 @@ public class Explorer {
                         int answer3 = scanner.nextInt();
                         if (answer3 == 1) {
                             System.out.println("=== ДОГОВОРИЛИСЬ! ТЫ НЕ ЗАХВАТЫВАЕШЬ ЭТУ ЗОНУ ===");
-                            updatePlayerRelations(playerNumber, 20, 30); // Улучшение отношений
-                            System.out.println("+ Наши отношения улучшились! Агрессивность: " + players[playerNumber].getAggressiveScore());
-                            System.out.println("+ Наши отношения улучшились! Дипломатия: " + players[playerNumber].getDiplomacyScore());
+                            updatePlayerRelations(playerNumber, 30, 30); // Улучшение отношений
                         } else {
                         System.out.println("!!! Я УДАРЯЮ ЗАКЛИНАНИЕМ ПО ТВОИМ ЮНИТАМ И УБИВАЮ:" + random.nextInt(3));
                         updatePlayerRelations(playerNumber, -10, -25); // Ухудшение отношений
-                            System.out.println("- Наши отношения ухудшились! Агрессивность: " + players[playerNumber].getAggressiveScore());
-                            System.out.println("- Наши отношения ухудшились! Дипломатия: " + players[playerNumber].getDiplomacyScore());
                         }
                     }
                 } else {
@@ -87,6 +167,35 @@ public class Explorer {
                 System.out.println("=== ПРОДОЛЖАЮ ЗАХВАТЫВАТЬ ТЕРРИТОРИИ ===");
             }
     }
+
+    // Метод используется если ведется война с игроком
+    public void attackTargetOnWar() {
+        Random random = new Random();
+
+        for (int i = 0; i < players.length; i++) { // Проходим по всем игрокам
+            Player player = players[i];
+            if (player.isWar()) { // Проверяем, ведется ли война с этим игроком
+                if (random.nextInt(100) >= 60) {
+                    System.out.println("=== ВЫДВИГАЮ ЧАСТЬ СВОИХ ВОЙСК ПРОТИВ ИГРОКА: " + (i + 1) + " ===");
+                }
+            } else {
+                System.out.println("№1 ТАРГЕТИНГ: Я МОГУ ОПРЕДЕЛИТЬ ПРИОРИТЕТНУЮ ЦЕЛЬ НА ОСНОВЕ ЕГО СИЛЫ? (1 - Да, 0 - Нет)");
+                int answer1 = scanner.nextInt();
+
+                if (answer1 == 1) {
+                    System.out.println("=== ДЕЙСТВУЮ ПРОТИВ СЛАБЕЙШИХ ВРАЖЕСКИХ АРМИЙ, КОТОРАЯ НАХОДИТСЯ ПОБЛИЗОСТИ ОТ МОИХ ТЕРРИТОРИЙ ===");
+
+                    System.out.println("№2 РАЗВИТИЕ НАСТУПЛЕНИЯ: МОГУ ЛИ Я НАЧАТЬ НАСТУПАТЬ НА ОДНОГО ИЗ ИГРОКА? (1 - Да, 0 - Нет)");
+                    int answer2 = scanner.nextInt();
+                    if (answer2 == 1) {
+                        System.out.println("=== ПРОДОЛЖАЮ НАСТУПЛЕНИЕ ЧАСТЬЮ СВОЕЙ АРМИИ ПРОТИВ ИГРОКА");
+                    }
+                }
+            }
+        }
+    }
+
+
 
     public void getUnits() {
         Random random = new Random();
@@ -98,6 +207,13 @@ public class Explorer {
         if (random.nextInt(100) >= 90) {
             System.out.println("В конце хода я покупаю 1 замок(+3)");
         }
+    }
+
+    public void neutralNations() {
+        Random random = new Random();
+
+        System.out.println("В конце хода я хожу " + random.nextInt(4) + " отрядами нейтральных народов");
+        System.out.println("Восстанавливаю потери " + random.nextInt(4) + " у нейтральных народов");
     }
 
 
@@ -112,36 +228,52 @@ public class Explorer {
                 System.out.println("+++ Му добрые соседи! Держи от меня 30 монет! +++");
             } else if (players[i].getDiplomacyScore() >= 50) {
                 System.out.println("+ Хочу заключить с тобой союз! и хочу дать тебе в дар 10 монет +++");
-            } else if (players[i].getDiplomacyScore() <= -10 && players[i].getDiplomacyScore() > - 25) {
+            } else if (players[i].getDiplomacyScore() <= -10 && players[i].getDiplomacyScore() > -25) {
                 System.out.println("- Я тебе не доверяю! И укрепляю границы от тебя 2 юнитами");
-                units = units -2;
+                units = units - 2;
                 System.out.println("в запасе осталось " + units + " юнита,ов");
             } else if (players[i].getDiplomacyScore() <= -25 && players[i].getDiplomacyScore() > -40) {
                 System.out.println("-- Я тебя опасаюсь и укрепляю границы от тебя еще 1 юнитом и строю 1 башню и  крепость(+3)");
-                units = units -1;
-                towers = towers -1;
-                castles = castles -1;
-                System.out.println("в запасе осталось " + units + " юнита,ов и  " + towers + " башен  и " + castles + " крепостей" );
+                units = units - 1;
+                towers = towers - 1;
+                castles = castles - 1;
+                System.out.println("в запасе осталось " + units + " юнита,ов и  " + towers + " башен  и " + castles + " крепостей");
             } else if (players[i].getDiplomacyScore() <= -55 && players[i].getDiplomacyScore() >= -70) {
                 System.out.println("--- Я считаю тебя угрозой и укрепляю границы еще 2 юнитами и строю еще 1 башню с крепостью(+3)");
-                units = units -2;
-                towers = towers -1;
+                units = units - 2;
+                towers = towers - 1;
                 castles = castles - 1;
-                System.out.println("в запасе осталось " + units + " юнита,ов и  " + towers + " башен  и " + castles + " крепостей" );
+                System.out.println("в запасе осталось " + units + " юнита,ов и  " + towers + " башен  и " + castles + " крепостей");
             } else if (players[i].getDiplomacyScore() <= -90) {
                 System.out.println("!!!! Я СЧИТАЮ ТЕБЯ ВРАГОМ, укрепляю границы всеми оставшимися " + units + "юнитами " + " башнями " + towers + " и крепостями(+3) " + castles);
+                players[i].setWar(true); // Устанавливаем флаг войны
+                players[i].setAggressiveScore(-100);
             }
         }
     }
 
     public void checkWarScore() {
-        System.out.println("==================================================================================================");
         for (int i = 0; i < players.length; i++) {
             if (players[i].getAggressiveScore() <= -100) {
-                System.out.println("!!!Я ОБЪЯВЛЯЮ ТЕБЕ ВОЙНУ ИГРОКУ " + (i + 1) + " и теперь я часто буду отправлять часть своей армии против твоих территорий!");
+                players[i].setWar(true);
+                System.out.println(" ");
+                System.out.println(" ");
+                System.out.println("!!!ВОЙНА С ИГРОКОМ " + (i + 1) + "  я часто буду отправлять часть своей армии против твоих территорий!");
+            } else if (players[i].getAggressiveScore() >= 0) {
+                players[i].setWar(false);
+                System.out.println("### ЗАКЛЮЧАЮ МИР С ИГРОКОМ " + (i+1) + " так как наши отношения достигли нуля");
             } else {
+                System.out.println(" ");
+                System.out.println(" ");
+                System.out.println(" ");
                 System.out.println(" ");
             }
         }
     }
+
+
+
+
+
+
 }

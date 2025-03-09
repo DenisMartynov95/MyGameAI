@@ -51,7 +51,7 @@ public class Explorer {
                 try {
                     int playerNumber = Integer.parseInt(numberStr) - 1; // Индексация с 0
                     if (playerNumber >= 0 && playerNumber < players.length) {
-                        updatePlayerRelations(playerNumber, -200, -50);
+                        updatePlayerRelations(playerNumber, -200, -10);
                         if (players[playerNumber].getAggressiveScore() <= -200) {
                             players[playerNumber].setWar(true); // Меняю флаг войны
                         }
@@ -68,6 +68,22 @@ public class Explorer {
 
     // Метод позволяющий прийти к соглашению о мире с рандомным игроком с рандомными условиями
     public void canWeMakePeace() {
+        // Вначале делаю рандомный ивент с подарками для ИИ, чтобы была возможность улучшить отношения за бабки
+        // Можно менять условия для разных ИИ-ИГРОКОВ
+        Random random = new Random();
+        int randomGiftEvent = random.nextInt(100);
+        int randomPlayer = random.nextInt(players.length);
+        if (randomGiftEvent >= 60) {
+            System.out.println("$$$$ Я ПРЕДЛАГАЮ ИГРОКУ " + (randomPlayer + 1) + " СДЕЛКУ, ДАЙ МНЕ 10 МОНЕТ И МЫ УЛУЧШИМ ОТНОШЕНИЯ! $$$$");
+            int answer1 = scanner.nextInt();
+            if (answer1 == 1) {
+                updatePlayerRelations(randomPlayer, 20, 20);
+            } else if (randomGiftEvent >= 90) {
+                System.out.println("^^^^^^^^ Я ПРЕДЛАГАЮ ВЕЛИКУЮ СДЕЛКУ ИГРОКУ " + (randomPlayer + 1) + " , ДАЙ МНЕ 10 МОНЕТ, А Я ТЕБЕ 2 ОТРЯДА ВОЙСК ^^^^^^^^");
+            }
+        }
+
+        // А дальше уже стандартный код для перемирия!
         for (int i = 0; i < players.length; i++) { // Используем индекс
             Player player = players[i];
             if (player.isWar()) {
@@ -81,7 +97,7 @@ public class Explorer {
                         System.out.println(" ");
 
                         player.setWar(false);
-                        updatePlayerRelations(i, 200, 50); // Используем индекс игрока
+                        updatePlayerRelations(i, 200, 30); // Используем индекс игрока
                     } else {
                         System.out.println("=== НЕ УДАЛОСЬ ДОГОВОРИТЬСЯ! ===");
                         System.out.println(" ");
